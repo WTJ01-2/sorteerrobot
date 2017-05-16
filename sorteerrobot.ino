@@ -7,51 +7,27 @@ Motor motor1(7, 6, 240);
 void setup() {
   
   Serial.begin(9600);
-  Serial.setTimeout(500);
+  Serial.setTimeout(100);
   Serial.println("Serial aan");
 }
 
 void loop() {
     if(Serial.available()){
-    String ser = Serial.readString();
-    if(getStringPartByNr(ser, ' ', 0) == "commando"){
-
-      if(getStringPartByNr(ser, ' ' , 1) == "left"){
-        motor1.driveLeft(750);        
-      } else if(getStringPartByNr(ser, ' ', 1) == "right"){
-        motor1.driveRight(750);
-      }
-      Serial.println("Commando succes: " + ser);
-    }
-    if(ser == "test"){
-      motor1.driveLeft(750);
-      Serial.println("hi");
-    }      
-    }
-
-    //if(Serial.read() == 116){
-    //  motor1.driveRight(750);
-    //}
-  //motor1.driveLeft(750);
-
-  //motor1.driveRight(750);
+      String ser = Serial.readString();
+      if(getStringPartByNr(ser, ' ', 0) == "commando"){
   
-  //draai(true);
-  //delay(2000);
-  //draai(false);
-  //delay(2000);
+        if(getStringPartByNr(ser, ' ' , 1) == "left"){
+          motor1.driveLeft(750);        
+          writeString("status left ok");
+        } else if(getStringPartByNr(ser, ' ', 1) == "right"){
+          motor1.driveRight(750);
+          writeString("status right ok");
+        }
+      }
+    }
 }
 
-void draai(boolean links){
-    if (links) {
-    digitalWrite(7, HIGH); 
-  } else {
-    digitalWrite(7, LOW);
-  }
-    analogWrite(6, 135);
-    delay(750);
-    analogWrite(6, 0);
-}
+// Source: https://github.com/BenTommyE/Arduino_getStringPartByNr/blob/master/getStringPartByNr.ino
 // splitting a string and return the part nr index split by separator
 String getStringPartByNr(String data, char separator, int index) {
     int stringData = 0;        //variable to count data part nr 
@@ -74,3 +50,11 @@ String getStringPartByNr(String data, char separator, int index) {
     return dataPart;
 }
 
+void writeString(String s) { // Push elke char door
+
+  for (int i = 0; i < s.length(); i++)
+  {
+    Serial.write(s[i]);
+  }
+
+}
