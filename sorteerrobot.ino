@@ -34,6 +34,9 @@ void loop() {
           String st = "status products ";
           st += products;
           writeString(st);
+        } else if(getStringPartByNr(ser, ' ', 1) == "reset"){
+          products = 0;
+          writeString("status reset ok");
         }
       }
     }
