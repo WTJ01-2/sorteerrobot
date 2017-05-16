@@ -2,29 +2,42 @@
 
 boolean rechts = false;
 boolean links = true;
+
+// Sensor pin
+int sensor = analogRead(A0);
+int products = 0;
 Motor motor1(7, 6, 240);
 
 void setup() {
   
   Serial.begin(9600);
   Serial.setTimeout(100);
-  Serial.println("Serial aan");
+  pinMode(A0, INPUT);
+  Serial.println("--- FINISHED ---");
 }
 
 void loop() {
     if(Serial.available()){
       String ser = Serial.readString();
       if(getStringPartByNr(ser, ' ', 0) == "commando"){
-  
         if(getStringPartByNr(ser, ' ' , 1) == "left"){
           motor1.driveLeft(750);        
           writeString("status left ok");
+          while(!boxCheck){
+            // wachten
+          }
+          writeString("status products " + products);
         } else if(getStringPartByNr(ser, ' ', 1) == "right"){
           motor1.driveRight(750);
           writeString("status right ok");
+          while(!boxCheck){
+            // wachten
+          }
+          writeString("status products " + products);
         }
       }
     }
+    
 }
 
 // Source: https://github.com/BenTommyE/Arduino_getStringPartByNr/blob/master/getStringPartByNr.ino
@@ -51,10 +64,19 @@ String getStringPartByNr(String data, char separator, int index) {
 }
 
 void writeString(String s) { // Push elke char door
-
   for (int i = 0; i < s.length(); i++)
   {
     Serial.write(s[i]);
   }
-
 }
+
+boolean boxCheck(){
+  sensor = analogRead(A0);
+  if(sensor > 800){
+      products++;
+      return true;
+  } else{
+    return false;
+  }
+}
+
