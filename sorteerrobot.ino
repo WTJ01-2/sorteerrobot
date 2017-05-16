@@ -23,17 +23,17 @@ void loop() {
         if(getStringPartByNr(ser, ' ' , 1) == "left"){
           motor1.driveLeft(750);        
           writeString("status left ok");
-          while(!boxCheck){
-            // wachten
-          }
-          writeString("status products " + products);
+          boxCheck();
+          String st = "status products ";
+          st += products;
+          writeString(st);
         } else if(getStringPartByNr(ser, ' ', 1) == "right"){
           motor1.driveRight(750);
           writeString("status right ok");
-          while(!boxCheck){
-            // wachten
-          }
-          writeString("status products " + products);
+          boxCheck();
+          String st = "status products ";
+          st += products;
+          writeString(st);
         }
       }
     }
@@ -70,13 +70,12 @@ void writeString(String s) { // Push elke char door
   }
 }
 
-boolean boxCheck(){
+void boxCheck(){
   sensor = analogRead(A0);
   if(sensor > 800){
       products++;
-      return true;
   } else{
-    return false;
+    boxCheck();
   }
 }
 
