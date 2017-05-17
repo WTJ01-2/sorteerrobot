@@ -4,43 +4,62 @@ boolean rechts = false;
 boolean links = true;
 
 // Sensor pin
-int sensor = analogRead(A0);
+int sensor = analogRead(A2);
 int products = 0;
 Motor motor1(7, 6, 240);
-
+int check = 0;
 void setup() {
-  
   Serial.begin(9600);
   Serial.setTimeout(100);
-  pinMode(A0, INPUT);
+  pinMode(A2, INPUT);
   Serial.println("--- FINISHED ---");
 }
 
 void loop() {
+//    Serial.println(analogRead(A2));
+//    delay(500);
     if(Serial.available()){
       String ser = Serial.readString();
       if(getStringPartByNr(ser, ' ', 0) == "commando"){
         if(getStringPartByNr(ser, ' ' , 1) == "left"){
           motor1.driveLeft(750);        
-          writeString("status left ok");
+          Serial.println("status left ok");
           boxCheck();
           String st = "status products ";
           st += products;
-          writeString(st);
+          Serial.println(st);
         } else if(getStringPartByNr(ser, ' ', 1) == "right"){
           motor1.driveRight(750);
-          writeString("status right ok");
+          Serial.println("status right ok");
           boxCheck();
           String st = "status products ";
           st += products;
-          writeString(st);
+          Serial.println(st);
         } else if(getStringPartByNr(ser, ' ', 1) == "reset"){
           products = 0;
-          writeString("status reset ok");
+          Serial.println("status reset ok");
+        } else{
+          Serial.println("status unknown command");
         }
       }
     }
     
+}
+
+void boxCheck(){
+  sensor = analogRead(A2);
+  if(sensor < 600 && sensor > 400){
+      products++;
+  } else{
+    if(check < 3000){
+      delay(1);
+      check++;
+      boxCheck();
+    } else{
+      Serial.println("status failed detection");
+      check = 0;
+    }
+  }
 }
 
 // Source: https://github.com/BenTommyE/Arduino_getStringPartByNr/blob/master/getStringPartByNr.ino
@@ -64,21 +83,5 @@ String getStringPartByNr(String data, char separator, int index) {
     }
     //return text if this is the last part
     return dataPart;
-}
-
-void writeString(String s) { // Push elke char door
-  for (int i = 0; i < s.length(); i++)
-  {
-    Serial.write(s[i]);
-  }
-}
-
-void boxCheck(){
-  sensor = analogRead(A0);
-  if(sensor > 800){
-      products++;
-  } else{
-    boxCheck();
-  }
 }
 
