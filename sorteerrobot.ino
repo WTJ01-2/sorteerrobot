@@ -8,16 +8,21 @@ int sensor = analogRead(A2);
 int products = 0;
 Motor motor1(7, 6, 240);
 int check = 0;
+boolean showValues = false;
 void setup() {
   Serial.begin(9600);
+  Serial.println("--- SORT ROBOT 0.0.1 ---");
+  Serial.println("--- SERIAL STARTED ---");
   Serial.setTimeout(100);
   pinMode(A2, INPUT);
-  Serial.println("--- FINISHED ---");
+  Serial.println("--- FINISHED SETUP ---");
 }
 
 void loop() {
-//    Serial.println(analogRead(A2));
-//    delay(500);
+    if(showValues){
+    Serial.println(analogRead(A2));
+    delay(500);
+    }
     if(Serial.available()){
       String ser = Serial.readString();
       if(getStringPartByNr(ser, ' ', 0) == "commando"){
@@ -38,9 +43,23 @@ void loop() {
         } else if(getStringPartByNr(ser, ' ', 1) == "reset"){
           products = 0;
           Serial.println("status reset ok");
+        } else if(getStringPartByNr(ser, ' ', 1) == "values"){
+          if(showValues){
+            showValues = false;
+          Serial.println("status values off");
+          } else{
+            showValues = true;
+            Serial.println("status values on");
+          }
+        } else if(getStringPartByNr(ser, ' ', 1) == "status"){
+          String p = "products: ";
+          p += products;
+          Serial.println(p);
         } else{
-          Serial.println("status unknown command");
+          Serial.println("commandos: left, right, reset, values, status");
         }
+      } else{
+        Serial.println("unknown input");
       }
     }
     
