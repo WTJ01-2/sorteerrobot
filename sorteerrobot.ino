@@ -39,7 +39,7 @@ void loop() {
         products = 0;          
         }
         products++;
-        Serial.println("status-arm-out-ok");
+        Serial.println("bpp-status-arm-out-ok");
         String p = "producten: ";
         p += products;
         Serial.println(p);
