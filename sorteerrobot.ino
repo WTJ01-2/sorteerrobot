@@ -38,14 +38,15 @@ void loop() {
           } else if(products == 2){
           motor2.driveRight(900);           
           } else {
-          motor2.driveRight(1200);    
+          motor2.driveRight(900);    
           products = 0;          
           }
           products++;
           Serial.println("bpp-status-arm_out_ok");
           
-        } else if(ser == "command-arm_in") {if(products == 1){
-             motor2.driveLeft(1300);   
+        } else if(ser == "command-arm_in") {
+          if(products == 1){
+             motor2.driveLeft(1100);   
           } else if (products == 2){
             motor2.driveLeft(1100);
           } else if (products == 3){
